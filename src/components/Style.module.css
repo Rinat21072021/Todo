@@ -1,0 +1,9 @@
+.lili{
+    margin-bottom: 20px;
+    position: relative;
+}
+.error{
+    display: block;
+    color: darkred;
+    position: absolute;
+}
