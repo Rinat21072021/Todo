@@ -1,9 +1,30 @@
+input{
+    outline: none;
+}
+
 .lili{
     margin-bottom: 20px;
     position: relative;
 }
 .error{
+    border: 1px solid darkred;
+}
+.errorMessage{
     display: block;
     color: darkred;
     position: absolute;
+}
+
+.taskList{
+    padding-top: 20px;
+}
+
+.isDone{
+    text-decoration: line-through;
+    text-decoration-color: brown;
+    opacity: 0.5;
+}
+
+.filterActive{
+    background-color: cornflowerblue;
 }

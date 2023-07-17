@@ -24,13 +24,9 @@ function App() {
 
 	const removeTask = (id: string) => setTasks(tasks.filter(elem => elem.id !== id))
 
+	const addTask = (value: string) => setTasks([{id: v1(), title: value, isDone: false}, ...tasks])
 
-	const addTask = (value: string) => {
-		setTasks([{id: v1(), title: value, isDone: false}, ...tasks])
-	}
-	const filterValueTasks = (value: FilterValueType) => {
-		setFilterValue(value)
-	}
+	const filterValueTasks = (value: FilterValueType) => setFilterValue(value)
 
 	const checkedTask = (id: string, isDone: boolean) => {
 		setTasks(tasks.map(elem=>id===elem.id ? {...elem, isDone}:elem))
@@ -48,6 +44,7 @@ function App() {
 					  filterValueTasks={filterValueTasks}
 					  addTask={addTask}
 					  checkedTask={checkedTask}
+					  filterValue={filterValue}
 			/>
 		</div>
 	);
