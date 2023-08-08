@@ -29,16 +29,26 @@ function App() {
 	const filterValueTasks = (value: FilterValueType) => setFilterValue(value)
 
 	const checkedTask = (id: string, isDone: boolean) => {
-		setTasks(tasks.map(elem=>id===elem.id ? {...elem, isDone}:elem))
+		setTasks(tasks.map(elem => id === elem.id ? {...elem, isDone} : elem))
 	}
 
-	let filterTask = tasks
-	if (filterValue === "active") filterTask = tasks.filter((elem) => !elem.isDone)
-	if (filterValue === "completed") filterTask = tasks.filter((elem) => elem.isDone)
+	const getFilteredTasks = (tasks: Array<TasksType>, filter: FilterValueType) => {
+
+		if (filter === "active") {
+			return tasks.filter((elem) => !elem.isDone)
+		}
+		if (filter === "completed") {
+			return tasks.filter((elem) => elem.isDone)
+		}
+
+		return tasks
+
+	}
+	let allTasks = getFilteredTasks(tasks, filterValue)
 
 	return (
 		<div className="App">
-			<TodoList tasks={filterTask}
+			<TodoList tasks={allTasks}
 					  title={'What to learn'}
 					  removeTask={removeTask}
 					  filterValueTasks={filterValueTasks}
