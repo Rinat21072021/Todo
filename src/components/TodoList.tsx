@@ -2,6 +2,8 @@ import React, {ChangeEvent, KeyboardEvent} from "react";
 import {FilterValueType, TasksArrayType, TaskType} from "../App";
 import style from '../components/Style.module.css'
 import {Button} from "./Button";
+import {AddItemForm} from "./addItemForm/AddItemForm";
+import {EditTableSpan} from "./editTableSpan/EditTableSpan";
 
 export type TodolistType = {
 	todoId: string
@@ -13,60 +15,27 @@ export type TodolistType = {
 	checkedTask: (id: string, isDone: boolean, todoId: string) => void
 	removeTodoList: (todoId: string) => void
 	filterValue: FilterValueType
+	changeTask: (id: string, newTitle: string, todolistId: string) => void
+	changeEditTitle:(todolistId: string, newTitle: string)=>void
 }
 
 export const TodoList = (props: TodolistType) => {
-	let [titleInput, setTitleInput] = React.useState('')
-	let [hasError, setHasError] = React.useState(false)
-	let [placeholderWithError, setPlaceholderWithError] = React.useState('Creat Task')
-	let [edit, setEdit] = React.useState(false)
-
 
 	const removeTaskHandle = (id: string) => props.removeTask(id, props.todoId)
-
-	const onChangeHandle = (event: ChangeEvent<HTMLInputElement>) => {
-		if (titleInput.length === 0) setHasError(false)
-		setTitleInput(event.currentTarget.value)
-	}
-
-	const addTaskHandle = () => {
-		if (titleInput.length === 0) {
-			setHasError(true);
-			setPlaceholderWithError('Field cannot be empty')
-			return;
-		}
-
-		if (titleInput.trim()) {
-			props.addTask(titleInput, props.todoId);
-			setTitleInput("");
-		}
-	};
-
-	const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === 'Enter') addTaskHandle()
-	}
-
-	const checkedTaskHandle = (id: string, isDone: boolean) => {
-		props.checkedTask(id, isDone, props.todoId)
-	}
-
-	const editHandle = () => {
-		setEdit(!edit)
-	}
-
-	const filterValueTasksHandle = (value: FilterValueType) => {
-			props.filterValueTasks(value, props.todoId)
-
-		};
+	const checkedTaskHandle = (id: string, isDone: boolean) => props.checkedTask(id, isDone, props.todoId)
+	const filterValueTasksHandle = (value: FilterValueType) => props.filterValueTasks(value, props.todoId)
 
 	let tasks = props.tasks.map((elem) => {
+		const changeTask = (newTitle: string) => {
+			props.changeTask(elem.id, newTitle, props.todoId)
+		}
 		return (
 			<li key={elem.id} className={`${elem.isDone ? style.isDone : ''} ${style.taskLine}`}>
 				<div>
 					<input type="checkbox"
 						   checked={elem.isDone}
 						   onChange={() => checkedTaskHandle(elem.id, !elem.isDone)}/>
-					<span onDoubleClick={() => editHandle()}>{elem.title}</span>
+					<EditTableSpan callback={changeTask} title={elem.title}/>
 				</div>
 				<button onClick={() => removeTaskHandle(elem.id)}>x</button>
 			</li>
@@ -76,18 +45,13 @@ export const TodoList = (props: TodolistType) => {
 	return (
 		<div className={style.main}>
 			<div className={style.todoListManager}>
-				<h3>{props.title}</h3>
+				<h3>
+					<EditTableSpan title={props.title} callback={(newTitle)=>props.changeEditTitle(props.todoId,newTitle)}/>
+				</h3>
 				<button onClick={() => props.removeTodoList(props.todoId)}>x</button>
 			</div>
 			<div className={style.todoListManager}>
-				<input
-					className={`${hasError ? style.error: ''}`}
-					value={titleInput}
-					   placeholder={placeholderWithError}
-					   onChange={(event) => onChangeHandle(event)}
-					   onKeyPress={(event) => onKeyPressHandler(event)}
-				/>
-				<button className={style.btnAddTask} onClick={addTaskHandle}>+</button>
+				<AddItemForm callback={(title) => props.addTask(title, props.todoId)} value={'Field cannot be empty'}/>
 			</div>
 			<ul className={style.taskList}>
 				{tasks}
