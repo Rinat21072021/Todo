@@ -1,9 +1,10 @@
-import React, {ChangeEvent, KeyboardEvent} from "react";
-import {FilterValueType, TasksArrayType, TaskType} from "../App";
+import React from "react";
+import {FilterValueType, TaskType} from "../App";
 import style from '../components/Style.module.css'
-import {Button} from "./Button";
 import {AddItemForm} from "./addItemForm/AddItemForm";
 import {EditTableSpan} from "./editTableSpan/EditTableSpan";
+import {Button, Checkbox, IconButton, List, ListItem, Typography} from "@mui/material";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 export type TodolistType = {
 	todoId: string
@@ -16,7 +17,7 @@ export type TodolistType = {
 	removeTodoList: (todoId: string) => void
 	filterValue: FilterValueType
 	changeTask: (id: string, newTitle: string, todolistId: string) => void
-	changeEditTitle:(todolistId: string, newTitle: string)=>void
+	changeEditTitle: (todolistId: string, newTitle: string) => void
 }
 
 export const TodoList = (props: TodolistType) => {
@@ -30,39 +31,64 @@ export const TodoList = (props: TodolistType) => {
 			props.changeTask(elem.id, newTitle, props.todoId)
 		}
 		return (
-			<li key={elem.id} className={`${elem.isDone ? style.isDone : ''} ${style.taskLine}`}>
+			<ListItem key={elem.id}
+					  divider
+					  sx={{p:0}}
+					  className={`${elem.isDone ? style.isDone : ''} ${style.taskLine}`}>
 				<div>
-					<input type="checkbox"
-						   checked={elem.isDone}
-						   onChange={() => checkedTaskHandle(elem.id, !elem.isDone)}/>
+					<Checkbox size={'small'}
+							  checked={elem.isDone}
+							  onChange={() => checkedTaskHandle(elem.id, !elem.isDone)}/>
 					<EditTableSpan callback={changeTask} title={elem.title}/>
 				</div>
-				<button onClick={() => removeTaskHandle(elem.id)}>x</button>
-			</li>
+				<IconButton onClick={() => removeTaskHandle(elem.id)}>
+					<DeleteForeverIcon/>
+				</IconButton>
+			</ListItem>
 		)
 	})
 
 	return (
 		<div className={style.main}>
-			<div className={style.todoListManager}>
-				<h3>
-					<EditTableSpan title={props.title} callback={(newTitle)=>props.changeEditTitle(props.todoId,newTitle)}/>
-				</h3>
-				<button onClick={() => props.removeTodoList(props.todoId)}>x</button>
-			</div>
+				<Typography variant="h6" sx={{fontWeight:'bolt'}}>
+						<EditTableSpan title={props.title}
+									   callback={(newTitle) => props.changeEditTitle(props.todoId, newTitle)}/>
+					<Button onClick={() => props.removeTodoList(props.todoId)}
+							size="small"
+							variant="contained"
+							startIcon={<DeleteForeverIcon/>}>
+					</Button>
+				</Typography>
 			<div className={style.todoListManager}>
 				<AddItemForm callback={(title) => props.addTask(title, props.todoId)} value={'Field cannot be empty'}/>
 			</div>
-			<ul className={style.taskList}>
+			<List className={style.taskList} sx={{display: 'flex', flexDirection:"column",
+				justifyContent: 'space-between'}}>
 				{tasks}
-			</ul>
+			</List>
 			<div className={style.btnFilter}>
-				<Button className={`${props.filterValue === 'all' ? style.filterActive : ''}`} name={'All'}
-						callback={() => filterValueTasksHandle('all')}/>
-				<Button className={props.filterValue === 'active' ? style.filterActive : ''} name={'Active'}
-						callback={() => filterValueTasksHandle('active')}/>
-				<Button className={props.filterValue === 'completed' ? style.filterActive : ''} name={'Completed'}
-						callback={() => filterValueTasksHandle('completed')}/>
+				<Button
+					sx={{mr: 1}}
+					variant="contained"
+					color={`${props.filterValue === 'all' ? 'secondary' : 'primary'}`}
+					size="small"
+					disableElevation
+					onClick={() => filterValueTasksHandle('all')}>all</Button>
+				<Button
+					sx={{mr: 1}}
+					variant="contained"
+					color={props.filterValue === 'active' ? 'secondary' : 'primary'}
+					size="small"
+					disableElevation
+					onClick={() => filterValueTasksHandle('active')}>active</Button>
+				<Button
+
+					sx={{mr: 1}}
+					variant="contained"
+					color={props.filterValue === 'completed' ? 'secondary' : 'primary'}
+					size="small"
+					disableElevation
+					onClick={() => filterValueTasksHandle('completed')}>completed</Button>
 			</div>
 		</div>
 	)
