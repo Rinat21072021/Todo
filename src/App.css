@@ -12,14 +12,13 @@ input{
 
 
 .App {
-
   padding: 30px;
   display: flex;
-
-
+  flex-direction: column;
 }
 .wrapper{
   display: block;
+  text-align: center;
 }
 
 .App > div {

@@ -46,14 +46,6 @@ export const AddItemForm = (props: AddItemFormType) => {
 					   onChange={(event) => onChangeHandle(event)}
 					   onKeyPress={(event) => onKeyPressHandler(event)}
 			/>
-			{/*<input*/}
-			{/*	className={`${hasError ? style.error : ''}`}*/}
-			{/*	value={titleInput}*/}
-			{/*	placeholder={placeholderWithError}*/}
-			{/*	onChange={(event) => onChangeHandle(event)}*/}
-			{/*	onKeyPress={(event) => onKeyPressHandler(event)}*/}
-			{/*/>*/}
-			{/*<button className={styles.btnAddTask} onClick={addTaskHandle}>+</button>*/}
 			<Button variant='outlined'
 					size={'small'}
 					onClick={addTaskHandle}>Add Task</Button>
