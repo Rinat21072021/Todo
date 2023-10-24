@@ -136,7 +136,7 @@ test('new array should be added when new todolist task', ()=>{
             { id: "3", title: "tea", isDone: false },
         ],
     };
-    const endState = ReducerTasks(startState, AddTopicTodoAC( '4', 'hoho'));
+    const endState = ReducerTasks(startState, AddTopicTodoAC('hoho'));
 
     const keys = Object.keys(endState)
 

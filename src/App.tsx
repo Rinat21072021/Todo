@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import {TodoList} from "./components/TodoList";
-import {v1} from "uuid";
-import {AddItemForm} from "./components/addItemForm/AddItemForm";
+import { TodoList } from "./components/TodoList";
+import { v1 } from "uuid";
+import { AddItemForm } from "./components/addItemForm/AddItemForm";
 import style from '../components/Style.module.css'
 import {
     AppBar,
@@ -17,7 +17,11 @@ import {
     Typography
 } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import {amber, teal} from "@mui/material/colors";
+import { amber, teal } from "@mui/material/colors";
+import { useDispatch, useSelector } from 'react-redux';
+import { AppRootStateType } from './store';
+import { addTaskAC, changeTaskAC, checkedTaskAC, removeTaskAC } from './reducer/ReducerTasks';
+import { AddTopicTodoAC, ChangeEditTitleAC, FilterValueTasksAC, RemoveTodoListAC } from './reducer/ReducerTodolists';
 
 export type FilterValueType = 'all' | 'active' | 'completed'
 
@@ -39,28 +43,11 @@ export type TaskType = {
 
 function App() {
 
-    const todoListID_1 = v1()
-    const todoListID_2 = v1()
-    const [todoLists, setTodoLists] = useState<TodoListType[]>([
-        {id: todoListID_1, title: 'What to learn', filter: 'all'},
-        {id: todoListID_2, title: 'what to bay', filter: 'all'}
-    ])
-
-    const [tasks, setTasks] = useState<TasksArrayType>({
-        [todoListID_1]: [
-            {id: v1(), title: 'HTML', isDone: true},
-            {id: v1(), title: 'JS', isDone: true},
-            {id: v1(), title: 'React', isDone: false},
-            {id: v1(), title: 'GraphQL', isDone: false},
-        ],
-        [todoListID_2]: [
-            {id: v1(), title: 'meat', isDone: true},
-            {id: v1(), title: 'egg', isDone: true},
-            {id: v1(), title: 'milk', isDone: false},
-            {id: v1(), title: 'ice-cream', isDone: false},
-        ]
-    })
+    const todoLists = useSelector<AppRootStateType, TodoListType[]>(state => state.todolists)
+    const tasks = useSelector<AppRootStateType, TasksArrayType>(state => state.tasks)
+    const dispatch = useDispatch()
     const [lightMode, setLightMode] = useState(true)
+
     const toggleTheme = () => setLightMode(!lightMode)
     const toggleThemeText = lightMode ? 'Set Light' : 'Set Dark'
     const theme = createTheme({
@@ -69,46 +56,33 @@ function App() {
             secondary: amber,
             mode: lightMode ? 'light' : 'dark',
         },
-
     });
 
     const removeTask = (id: string, todoId: string) => {
-        setTasks({...tasks, [todoId]: tasks[todoId].filter(el => el.id !== id)})
+        dispatch(removeTaskAC(todoId, id))
     }
-
     const addTask = (value: string, todoId: string) => {
-        const newTask = {id: v1(), title: value, isDone: false}
-        setTasks({...tasks, [todoId]: [newTask, ...tasks[todoId]]})
+        dispatch(addTaskAC(todoId, value))
+    }
+    const checkedTask = (id: string, isDone: boolean, todoId: string) => {
+        dispatch(checkedTaskAC(todoId, id, isDone))
+    }
+    const changeTask = (id: string, newTitle: string, todolistId: string) => {
+        dispatch(changeTaskAC(todolistId, id, newTitle))
     }
 
     const addTopicTodo = (title: string) => {
-        const id = v1()
-        const newTopic: TodoListType = {id: id, title, filter: 'all'}
-        setTodoLists([...todoLists, newTopic])
-        setTasks({...tasks, [id]: []})
+        dispatch(AddTopicTodoAC(title))
     }
-
-    const changeTask = (id: string, newTitle: string, todolistId: string) => {
-        setTasks({...tasks, [todolistId]: tasks[todolistId].map(t => t.id === id ? {...t, title: newTitle} : t)})
-    }
-
     const changeEditTitle = (todolistId: string, newTitle: string) => {
-        setTodoLists(todoLists.map((t) => t.id === todolistId ? {...t, newTitle} : t))
+        dispatch(ChangeEditTitleAC(todolistId, newTitle))
     }
-
     const filterValueTasks = (value: FilterValueType, todoId: string) => {
-        setTodoLists(todoLists.map(m => m.id === todoId ? {...m, filter: value} : m))
+        dispatch(FilterValueTasksAC(value, todoId))
     }
-
-    const checkedTask = (id: string, isDone: boolean, todoId: string) => {
-        setTasks({...tasks, [todoId]: tasks[todoId].map(m => m.id === id ? {...m, isDone} : m)})
-    }
-
     const removeTodoList = (todoId: string) => {
-        setTodoLists(todoLists.filter(f => f.id !== todoId))
-        delete tasks[todoId]
+        dispatch(RemoveTodoListAC(todoId))
     }
-
 
     const todoComponents = todoLists.map((td) => {
         let allTasks = tasks[td.id]
@@ -122,7 +96,7 @@ function App() {
 
         return (
             <Grid item key={td.id}>
-                <Paper sx={{p: 1}} elevation={10}>
+                <Paper sx={{ p: 1 }} elevation={10}>
                     <TodoList
                         todoId={td.id}
                         tasks={allTasks}
@@ -143,32 +117,32 @@ function App() {
 
     return <ThemeProvider theme={theme}>
         <div className="App">
-            <CssBaseline/>
-            <AppBar position='static' sx={{marginBottom: 3}}>
-                <Toolbar sx={{display: 'flex', justifyContent: 'space-between'}}>
+            <CssBaseline />
+            <AppBar position='static' sx={{ marginBottom: 3 }}>
+                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <IconButton
                         size="small"
                         edge="start"
                         color="inherit"
                         aria-label="menu"
-                        sx={{mr: 2}}
+                        sx={{ mr: 2 }}
                     >
-                        <MenuIcon/>
+                        <MenuIcon />
                     </IconButton>
                     <Typography variant="h6">
                         TodoLists
                     </Typography>
-                    <ButtonGroup  variant="outlined" aria-label="outlined button group">
+                    <ButtonGroup variant="outlined" aria-label="outlined button group">
                         <Button color="inherit">LogOut</Button>
                         <Button color="inherit" onClick={toggleTheme}>{toggleThemeText}</Button>
                     </ButtonGroup>
                 </Toolbar>
             </AppBar>
             <Container>
-                <Grid container sx={{p: '15px', justifyContent: 'center'}}>
-                    <AddItemForm value={'Enter text failed'} callback={(title) => addTopicTodo(title)}/>
+                <Grid container sx={{ p: '15px', justifyContent: 'center' }}>
+                    <AddItemForm value={'Enter text failed'} callback={(title) => addTopicTodo(title)} />
                 </Grid>
-                <Grid container sx={{justifyContent: 'center'}} spacing={10}>
+                <Grid container sx={{ justifyContent: 'center' }} spacing={10}>
                     {todoComponents}
                 </Grid>
 

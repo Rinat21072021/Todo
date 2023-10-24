@@ -7,22 +7,16 @@ export type RemoveTaskAT = ReturnType<typeof removeTaskAC>
 export type ChangeTaskAT = ReturnType<typeof changeTaskAC>
 export type CheckedTaskAT = ReturnType<typeof checkedTaskAC>
 
-export const addTaskAC = (todoId: string, title: string) => {
-    return {type: 'ADD-TASK', payload: {todoId, id:v1(), title}} as const
-}
-export const removeTaskAC = (todoId:string, id:string)=>{
-    return {type: 'REMOVE-TASK', payload:{todoId, id}} as const
-}
+export type TasksActions = AddTask 
+| RemoveTaskAT 
+| ChangeTaskAT 
+| CheckedTaskAT 
+| RemoveTodoListAT 
+| AddTopicTodoAT
 
-export const changeTaskAC = (todoId:string, id:string, title:string)=>{
-    return {type:'CHANGE-TITLE', payload: {todoId, id, title}} as const
-}
+const initialState: TasksArrayType = {}
 
-export const checkedTaskAC = (todoId:string, id: string, isDone:boolean)=>{
-    return {type: 'CHECKED-TASK', payload:{todoId, id, isDone}} as const
-}
-export type TasksActions = AddTask | RemoveTaskAT | ChangeTaskAT | CheckedTaskAT | RemoveTodoListAT | AddTopicTodoAT
-export const ReducerTasks = (state: TasksArrayType, action: TasksActions): TasksArrayType => {
+export const ReducerTasks = (state = initialState, action: TasksActions): TasksArrayType => {
     switch (action.type) {
         case "ADD-TASK":
             let newTask: TaskType= { id:action.payload.id, title:action.payload.title, isDone:false}
@@ -42,6 +36,21 @@ export const ReducerTasks = (state: TasksArrayType, action: TasksActions): Tasks
         case "ADD-TOPIC-TODOLIST":
             return {...state, [action.payload.id]:[{id:v1(), title:action.payload.title, isDone:false}]}
         default:
-            throw Error('Upss, Dont`t worry.')
+            return state
     }
+}
+
+export const addTaskAC = (todoId: string, title: string) => {
+    return {type: 'ADD-TASK', payload: {todoId, id:v1(), title}} as const
+}
+export const removeTaskAC = (todoId:string, id:string)=>{
+    return {type: 'REMOVE-TASK', payload:{todoId, id}} as const
+}
+
+export const changeTaskAC = (todoId:string, id:string, title:string)=>{
+    return {type:'CHANGE-TITLE', payload: {todoId, id, title}} as const
+}
+
+export const checkedTaskAC = (todoId:string, id: string, isDone:boolean)=>{
+    return {type: 'CHECKED-TASK', payload:{todoId, id, isDone}} as const
 }

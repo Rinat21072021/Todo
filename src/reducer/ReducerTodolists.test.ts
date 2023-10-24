@@ -17,7 +17,7 @@ test("should be add todolist", ()=>{
         {id:todolistID_2, title: "Lomuchei test", filter:"all"}
     ]
 
-    const endState = ReducerTodolists(startState, AddTopicTodoAC(v1(),'new title'))
+    const endState = ReducerTodolists(startState, AddTopicTodoAC('new title'))
 
     expect(endState.length).toBe(3)
     expect(endState[2].title).toBe('new title')
