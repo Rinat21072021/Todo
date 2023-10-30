@@ -19,9 +19,10 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { amber, teal } from "@mui/material/colors";
 import { useDispatch, useSelector } from 'react-redux';
-import { AppRootStateType } from './store';
 import { addTaskAC, changeTaskAC, checkedTaskAC, removeTaskAC } from './reducer/ReducerTasks';
 import { AddTopicTodoAC, ChangeEditTitleAC, FilterValueTasksAC, RemoveTodoListAC } from './reducer/ReducerTodolists';
+import { tasksSelector, todoListSelector } from './reducer/selector'
+
 
 export type FilterValueType = 'all' | 'active' | 'completed'
 
@@ -43,8 +44,8 @@ export type TaskType = {
 
 function App() {
 
-    const todoLists = useSelector<AppRootStateType, TodoListType[]>(state => state.todolists)
-    const tasks = useSelector<AppRootStateType, TasksArrayType>(state => state.tasks)
+    const todoLists = useSelector(todoListSelector)
+    const tasks = useSelector(tasksSelector)
     const dispatch = useDispatch()
     const [lightMode, setLightMode] = useState(true)
 

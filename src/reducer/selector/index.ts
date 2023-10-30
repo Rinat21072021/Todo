@@ -1,5 +1,4 @@
-import {todoListSelector} from './todolistUseSelector'
-import {tasksSelector} from './tasksUseSelector'
-
+export {todoListSelector} from './todolistUseSelector'
+export {tasksSelector} from './tasksUseSelector'
 
 
