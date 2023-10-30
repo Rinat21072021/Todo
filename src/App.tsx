@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
 import { TodoList } from "./components/TodoList";
-import { v1 } from "uuid";
 import { AddItemForm } from "./components/addItemForm/AddItemForm";
 import style from '../components/Style.module.css'
 import {
@@ -19,8 +18,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { amber, teal } from "@mui/material/colors";
 import { useDispatch, useSelector } from 'react-redux';
-import { addTaskAC, changeTaskAC, checkedTaskAC, removeTaskAC } from './reducer/ReducerTasks';
-import { AddTopicTodoAC, ChangeEditTitleAC, FilterValueTasksAC, RemoveTodoListAC } from './reducer/ReducerTodolists';
+import { AddTopicTodoAC,  FilterValueTasksAC } from './reducer/ReducerTodolists';
 import { tasksSelector, todoListSelector } from './reducer/selector'
 
 
@@ -43,7 +41,6 @@ export type TaskType = {
 }
 
 function App() {
-
     const todoLists = useSelector(todoListSelector)
     const tasks = useSelector(tasksSelector)
     const dispatch = useDispatch()
@@ -55,35 +52,12 @@ function App() {
         palette: {
             primary: teal,
             secondary: amber,
-            mode: lightMode ? 'light' : 'dark',
+            mode: !lightMode ? 'light' : 'dark',
         },
     });
 
-    const removeTask = (id: string, todoId: string) => {
-        dispatch(removeTaskAC(todoId, id))
-    }
-    const addTask = (value: string, todoId: string) => {
-        dispatch(addTaskAC(todoId, value))
-    }
-    const checkedTask = (id: string, isDone: boolean, todoId: string) => {
-        dispatch(checkedTaskAC(todoId, id, isDone))
-    }
-    const changeTask = (id: string, newTitle: string, todolistId: string) => {
-        dispatch(changeTaskAC(todolistId, id, newTitle))
-    }
-
-    const addTopicTodo = (title: string) => {
-        dispatch(AddTopicTodoAC(title))
-    }
-    const changeEditTitle = (todolistId: string, newTitle: string) => {
-        dispatch(ChangeEditTitleAC(todolistId, newTitle))
-    }
-    const filterValueTasks = (value: FilterValueType, todoId: string) => {
-        dispatch(FilterValueTasksAC(value, todoId))
-    }
-    const removeTodoList = (todoId: string) => {
-        dispatch(RemoveTodoListAC(todoId))
-    }
+    const addTopicTodo = (title: string) => {dispatch(AddTopicTodoAC(title))}
+    const filterValueTasks = (value: FilterValueType, todoId: string) => {dispatch(FilterValueTasksAC(value, todoId))}
 
     const todoComponents = todoLists.map((td) => {
         let allTasks = tasks[td.id]
@@ -94,7 +68,6 @@ function App() {
             allTasks = tasks[td.id].filter((elem) => elem.isDone)
         }
 
-
         return (
             <Grid item key={td.id}>
                 <Paper sx={{ p: 1 }} elevation={10}>
@@ -102,13 +75,7 @@ function App() {
                         todoId={td.id}
                         tasks={allTasks}
                         title={td.title}
-                        removeTask={removeTask}
                         filterValueTasks={filterValueTasks}
-                        addTask={addTask}
-                        checkedTask={checkedTask}
-                        changeTask={changeTask}
-                        changeEditTitle={changeEditTitle}
-                        removeTodoList={removeTodoList}
                         filterValue={td.filter}
                     />
                 </Paper>
@@ -146,9 +113,7 @@ function App() {
                 <Grid container sx={{ justifyContent: 'center' }} spacing={10}>
                     {todoComponents}
                 </Grid>
-
             </Container>
-
         </div>
     </ThemeProvider>
 }
