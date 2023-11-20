@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import { TodoList } from "./components/TodoList";
 import { AddItemForm } from "./components/addItemForm/AddItemForm";
@@ -67,6 +67,8 @@ function App() {
         if (td.filter === "completed") {
             allTasks = tasks[td.id].filter((elem) => elem.isDone)
         }
+
+       
 
         return (
             <Grid item key={td.id}>
